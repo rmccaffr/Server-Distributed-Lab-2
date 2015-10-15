@@ -19,7 +19,6 @@ class ThreadingPoolMixIn(ThreadingMixIn):
             server_thread = threading.Thread(target = self.process_request_thread)
             server_thread.daemon = True
             server_thread.start()
-            #print self.numThreads
         while True:
             self.handle_request()
         self.server_close()
@@ -39,10 +38,10 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
     def handle(self):
         data = self.request.recv(1024)
     	response= "Connected To Server"
-    	global should_be_running
+    	global server
     	if data == "KILL_SERVICE\n":
-    	    server.shutdown()
-    	    server.server_close()		
+    	    server.shutdown()	
+    	    server.close()	
      	elif data.startswith("HELO") and data.endswith("\n"):
      		ip, port = server.server_address
      		response= data+"IP:"+str(ip)+"\nPort:"+str(port)+"\nStudentID:12309879\n"   		
@@ -53,9 +52,10 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
     	
 class ThreadedTCPServer(ThreadingPoolMixIn, SocketServer.TCPServer):
 		pass
+
+server = ThreadedTCPServer(('',int(sys.argv[1])), ThreadedTCPRequestHandler)
 		
 if __name__ == "__main__":
-	server = ThreadedTCPServer(('',int(sys.argv[1])), ThreadedTCPRequestHandler)
 	server.serve_forever()
 	
 
