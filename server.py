@@ -8,7 +8,7 @@ import socket
 import time
 from Queue import Queue
 import sys
-
+import os
 
 class ThreadingPoolMixIn(ThreadingMixIn):
     numThreads=20;
@@ -40,8 +40,8 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
     	response= "Connected To Server"
     	global server
     	if data == "KILL_SERVICE\n":
-    	    server.shutdown()	
-    	    server.close()	
+    		os._exit(0) 
+    	    	
      	elif data.startswith("HELO") and data.endswith("\n"):
      		ip, port = server.server_address
      		response= data+"IP:"+str(ip)+"\nPort:"+str(port)+"\nStudentID:12309879\n"   		
